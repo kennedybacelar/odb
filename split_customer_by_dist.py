@@ -24,10 +24,11 @@ def sanitizing_file(df_template_customer):
     df_template_customer['Key_SAP_Code'] = df_template_customer['SAP_Code']
     return df_template_customer
 
-def writing_files(df_to_be_written, file_name):
+def writing_files(df_to_be_written, file_name, destination_path):
 
     today_date = datetime.today().strftime("%Y%m%d_%H%M%S")
-    final_file_name = file_name + '_' + today_date + '.csv' 
+    final_file_name = file_name + '_' + today_date + '.csv'
+    final_file_name = os.path.join(destination_path, final_file_name).replace('\\', '/')
 
     df_to_be_written[df_to_be_written.columns].to_csv(
         final_file_name, sep=';', encoding='mbcs',
@@ -45,7 +46,7 @@ def splitting_data_frames(df_template_customer, destination_path):
         single_df_customer = df_template_customer.loc[[individual_dist], :]
 
         try:
-            writing_files(single_df_customer, file_name)
+            writing_files(single_df_customer, file_name, destination_path)
         except Exception as error:
             print('Not possible saving file - {}\nError - {}'.format(file_name, error))
 
@@ -90,6 +91,7 @@ def main():
     finally:
         if success_splitting_data_frames:
             print('Successfully Executed')
+
 
 
 if __name__ == '__main__':
